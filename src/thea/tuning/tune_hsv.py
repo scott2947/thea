@@ -85,6 +85,9 @@ while True:
     hsv = cv2.cvtColor(frame, cv2.COLOR_RGB2HSV)
     mask = cv2.inRange(hsv, (low_H, low_S, low_V), (high_H, high_S, high_V))
 
+    mask = cv2.erode(mask, None, iterations=3)
+    mask = cv2.dilate(mask, None, iterations=3)
+
     cv2.imshow(window_capture_name, frame)
     cv2.imshow(window_detection_name, mask)
 
