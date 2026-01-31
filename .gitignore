@@ -1,5 +1,3 @@
 thea.egg-info/
 __pycache__/
 playground/
-.venv/
-hsv_values.txt
