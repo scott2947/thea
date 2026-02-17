@@ -2,6 +2,7 @@ from abc import ABC, abstractmethod
 import socket, struct
 from thea.config import HOST, PORT
 
+
 class BaseServer(ABC):
 
     def __init__(self):
@@ -120,8 +121,4 @@ class UDPServer(BaseServer):
 
 
 if __name__ == "__main__":
-    server = TCPServer()
-    server.start_server()
-    message = server.receive_string()
-    print(message)
-    server.close_server()
+    pass
