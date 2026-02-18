@@ -27,6 +27,16 @@ class BaseServer(ABC):
         return data.decode("utf-16")
 
 
+    @abstractmethod
+    def send(self, data: bytes) -> None:
+        pass
+
+    
+    def send_string(self, message: str) -> None:
+        data = message.encode("utf-16")
+        self.send(data)
+
+
     def close_server(self) -> None:
         if self.socket:
             self.socket.close()
@@ -49,7 +59,9 @@ class TCPServer(BaseServer):
 
 
     def _recv_exactly(self, n: int) -> bytes:
-        assert self.conn is not None, "Connection was lost or not established"
+        
+        if not self.conn:
+            raise RuntimeError("Connection lost or closed by client")
 
         data = b''
         while len(data) < n:
@@ -58,17 +70,22 @@ class TCPServer(BaseServer):
                 return b''
             data += packet
         return data
+    
 
-
-    def receive(self) -> bytes:
+    def _connect(self) -> None:
 
         if not self.socket:
-            raise RuntimeError("Server not started. Call start_server() first.")
-
+            raise RuntimeError("Server not started. Call start_server() first")
+        
         if self.conn is None:
             print("TCP Server waiting for a connection")
             self.conn, addr = self.socket.accept()
             print(f"TCP Server connected by {addr}")
+
+
+    def receive(self) -> bytes:
+
+        self._connect()
 
         try:
             header = self._recv_exactly(4)
@@ -86,6 +103,22 @@ class TCPServer(BaseServer):
             return b""
         
 
+    def send(self, data: bytes) -> None:
+        
+        self._connect()
+
+        if not self.conn:
+            raise RuntimeError("Connection lost or closed by client")
+
+        try:
+            header = struct.pack(">I", len(data))
+            self.conn.sendall(header + data)
+        
+        except Exception as e:
+            print(f"TCP Server send error: {e}")
+            self.close_connection()
+        
+
     def close_connection(self) -> None:
         if self.conn:
             self.conn.close()
@@ -101,6 +134,10 @@ class TCPServer(BaseServer):
 
 class UDPServer(BaseServer):
 
+    def __init__(self):
+        super().__init__()
+        self.addr = None
+
     def start_server(self) -> None:
         self.socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         self.socket.bind((HOST, PORT))
@@ -109,10 +146,21 @@ class UDPServer(BaseServer):
 
     def receive(self) -> bytes:
         if not self.socket:
-            raise RuntimeError("Server not started.")
+            raise RuntimeError("Server not started. Call start_server() first")
         
-        data, _ = self.socket.recvfrom(65535)
+        data, self.addr = self.socket.recvfrom(65535)
         return data
+
+
+    def send(self, data: bytes) -> None:
+        
+        if not self.socket:
+            raise RuntimeError("Server not started. Call start_server() first")
+        
+        if not self.addr:
+            raise RuntimeError("Client not helloed")
+        
+        self.socket.sendto(data, self.addr)
 
 
     def close_server(self) -> None:
