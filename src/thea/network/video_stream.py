@@ -1,7 +1,10 @@
 import cv2
 import numpy as np
+import queue
+import threading
 from thea.network.server import UDPServer
 from thea.network.processing import calculate_average
+
 
 class VideoProducer:
     def __init__(self, server: UDPServer, frame_queue: queue.Queue[np.ndarray]):
@@ -9,13 +12,14 @@ class VideoProducer:
         self.frame_queue = frame_queue
         self.running = True
 
+
     def run(self) -> None:
         while self.running:
             try:
                 data = self.server.receive()
                 if data:
                     nparr = np.frombuffer(data, np.uint8)
-                    frame: np.ndarray | None = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
+                    frame = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
                     if frame is not None:
                         try:
                             self.frame_queue.put_nowait(frame)
@@ -24,46 +28,51 @@ class VideoProducer:
             except Exception:
                 pass
 
+
 class VideoConsumer:
-    def __init__(self, frame_queue: queue.Queue[np.ndarray]):
+    def __init__(self, frame_queue: queue.Queue[np.ndarray], operation):
         self.frame_queue = frame_queue
+        self.operation = operation
         self.running = True
+
 
     def run(self) -> None:
         while self.running:
             try:
                 frame = self.frame_queue.get()
-                b, g, r = calculate_average(frame)
-                print(f"B: {b:.1f} G: {g:.1f} R: {r:.1f} | Queue: {self.frame_queue.qsize()}  ", end="\r")
+                self.operation(frame)
                 self.frame_queue.task_done()
             except Exception:
                 pass
 
+
+class VideoController:
+    def __init__(self, operation) -> None:
+        self.server = UDPServer()
+        self.shared_queue = queue.Queue(maxsize=30)
+
+        self.producer = VideoProducer(self.server, self.shared_queue)
+        self.consumer = VideoConsumer(self.shared_queue, operation)
+
+        self.producer_thread = threading.Thread(target=self.producer.run, daemon=True)
+        self.consumer_thread = threading.Thread(target=self.consumer.run, daemon=True)
+    
+    
+    def start(self) -> None:
+        self.server.start_server()
+
+        self.producer_thread.start()
+        self.consumer_thread.start()
+
+        try:
+            self.producer_thread.join()
+            self.consumer_thread.join()
+        except KeyboardInterrupt:
+            self.producer.running = False
+            self.consumer.running = False
+            self.server.close_server()
+
+
 if __name__ == "__main__":
-    import queue
-    import threading
-    
-    server = UDPServer()
-    server.start_server()
-    
-    shared_queue: queue.Queue[np.ndarray] = queue.Queue(maxsize=10)
-    
-    producer = VideoProducer(server, shared_queue)
-    consumer = VideoConsumer(shared_queue)
-
-    producer_thread = threading.Thread(target=producer.run, daemon=True)
-    consumer_thread = threading.Thread(target=consumer.run, daemon=True)
-
-    producer_thread.start()
-    consumer_thread.start()
-
-    try:
-        producer_thread.join()
-        consumer_thread.join()
-    except KeyboardInterrupt:
-        producer.running = False
-        consumer.running = False
-        server.close_server()
-
-
-## Look at using multiprocessing.Process, synchronisation (with Events not Booleans), Poison Pills
+    vc = VideoController(calculate_average)
+    vc.start()
