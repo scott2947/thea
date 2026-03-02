@@ -42,12 +42,12 @@ class VideoConsumer:
                 frame = self.frame_queue.get()
                 self.operation(frame)
                 self.frame_queue.task_done()
-            except Exception:
+            except queue.Empty:
                 pass
 
 
 class VideoController:
-    def __init__(self, operation) -> None:
+    def __init__(self, operation):
         self.server = UDPServer()
         self.shared_queue = queue.Queue(maxsize=30)
 
