@@ -42,7 +42,7 @@ class VideoConsumer:
                 frame = self.frame_queue.get()
                 self.operation(frame)
                 self.frame_queue.task_done()
-            except Exception:
+            except queue.Empty:
                 pass
 
 
