@@ -47,7 +47,7 @@ class VideoConsumer:
 
 
 class VideoController:
-    def __init__(self, operation):
+    def __init__(self, operation) -> None:
         self.server = UDPServer()
         self.shared_queue = queue.Queue(maxsize=30)
 
