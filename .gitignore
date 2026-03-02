@@ -2,3 +2,4 @@ thea.egg-info/
 __pycache__/
 playground/
 config.py
+.vscode/
