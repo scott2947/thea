@@ -3,7 +3,6 @@ import numpy as np
 import queue
 import threading
 from thea.network.server import UDPServer
-from thea.network.processing import calculate_average
 
 
 class VideoProducer:
@@ -74,5 +73,4 @@ class VideoController:
 
 
 if __name__ == "__main__":
-    vc = VideoController(calculate_average)
-    vc.start()
+    pass
