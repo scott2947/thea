@@ -1,12 +1,10 @@
 import numpy as np
-import cv2
-
-
 def calculate_average(frame: np.ndarray) -> None:
     b, r, g = np.mean(frame, axis=(0, 1))
     print(f"B: {b:.1f} G: {g:.1f} R: {r:.1f} ", end="\r")
 
 
+import cv2
 def identify_coordinates_hsv(frame: np.ndarray) -> None:
     hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
 
