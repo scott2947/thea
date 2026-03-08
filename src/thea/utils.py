@@ -7,24 +7,14 @@ def calculate_average(frame: np.ndarray) -> None:
 import cv2
 def identify_coordinates_hsv(frame: np.ndarray) -> None:
     hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
-
-    # lower_bound = np.array([80, 110, 55])
-    # upper_bound = np.array([95, 255, 255])
-
-    lower_bound = np.array([31, 100, 50])
-    upper_bound = np.array([41, 255, 255])
+    lower_bound, upper_bound = np.array([29, 120, 50]), np.array([60, 255, 255])
     mask = cv2.inRange(hsv, lower_bound, upper_bound)
 
-    kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (5, 5))
-    mask = cv2.erode(mask, kernel, iterations=3)
-    mask = cv2.dilate(mask, kernel, iterations=3)
+    kernel = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (5, 5))
+    mask = cv2.morphologyEx(mask, cv2.MORPH_OPEN, kernel, iterations=3)
 
     num_labels, _, stats, centroids = cv2.connectedComponentsWithStats(mask, connectivity=8)
-
     for i in range(1, num_labels):
-        area = stats[i, cv2.CC_STAT_AREA]
-
-        cx, cy = centroids[i]
-
-        if area > 200:
-            print(f"Ball {i}: Centre = ({int(cx)}, {int(cy)}, Area={area})")
+        if stats[i, cv2.CC_STAT_AREA] > 200:
+            cx, cy = centroids[i]
+            print(f"Ball {i}: Centre = ({int(cx)}, {int(cy)}, Area={stats[i, cv2.CC_STAT_AREA]})")

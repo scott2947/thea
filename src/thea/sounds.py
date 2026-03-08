@@ -1,7 +1,7 @@
 import os, math, struct, wave, subprocess
 
 
-def play_morse_pattern(pattern, wpm=20, freq=750):
+def play_morse_pattern(pattern: str, wpm: int = 20, freq: int = 750) -> None:
 
     pattern_slug = pattern.replace(".", "o").replace("-", "a").replace(" ", "s")
     filename = f"{pattern_slug}_{wpm}wpm_{freq}hz.wav"
@@ -40,7 +40,7 @@ def play_morse_pattern(pattern, wpm=20, freq=750):
     subprocess.run(["afplay", path])
 
 
-def play_string_as_morse(string, **kwargs):
+def play_string_as_morse(string: str, **kwargs) -> None:
     morse_dict = {
         'A': '.-', 'B': '-...', 'C': '-.-.', 'D': '-..', 'E': '.', 'F': '..-.',
         'G': '--.', 'H': '....', 'I': '..', 'J': '.---', 'K': '-.-', 'L': '.-..',
