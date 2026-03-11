@@ -3,7 +3,7 @@ import numpy as np
 from thea.planning.base import BasePlanner
 
 
-class PlanningProcessor:
+class PlanningWorker:
     def __init__(self, coord_queue: queue.Queue[np.ndarray], command_queue: queue.Queue[np.ndarray], planner: BasePlanner):
         self.coord_queue = coord_queue
         self.command_queue = command_queue

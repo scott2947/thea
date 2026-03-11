@@ -1,5 +1,15 @@
+import numpy as np
 from thea.pipeline import Pipeline
+from thea.detection.color.detection import ColorDetector
+from thea.planning.base import BasePlanner
 
-# pl = Pipeline("do magic")
-# pl.start()
-# pl.run()
+
+class DefaultPlanner(BasePlanner):
+    def plan_commands(self, coords: np.ndarray) -> np.ndarray:
+        return super().plan_commands(coords)
+
+
+if __name__ == "__main__":
+    pl = Pipeline("colour-tracking", ColorDetector(), DefaultPlanner())
+    pl.start()
+    pl.run()

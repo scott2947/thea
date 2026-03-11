@@ -6,6 +6,7 @@ from thea.detection.detection_thread import DetectionProcessor
 from thea.planning.planning_thread import PlanningProcessor
 from thea.network.command_thread import CommandConsumer
 
+
 class Pipeline:
     def __init__(self, name: str, detector: BaseDetector, planner: BasePlanner):
         self.name = name

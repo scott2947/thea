@@ -3,7 +3,7 @@ import numpy as np
 from thea.network.server import TCPServer
 
 
-class CommandConsumer:
+class CommandWorker:
     def __init__(self, command_queue: queue.Queue[np.ndarray]):
         self.command_queue = command_queue
         self.server = TCPServer()

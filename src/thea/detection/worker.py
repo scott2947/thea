@@ -3,7 +3,7 @@ import numpy as np
 from thea.detection.base import BaseDetector
 
 
-class DetectionProcessor:
+class DetectionWorker:
     def __init__(self, frame_queue: queue.Queue[np.ndarray], coord_queue: queue.Queue[np.ndarray], detector: BaseDetector):
         self.frame_queue = frame_queue
         self.coord_queue = coord_queue

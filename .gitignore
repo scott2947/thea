@@ -4,3 +4,6 @@ playground/
 config.py
 .vscode/
 storage/
+.devcontainer/
+.claude/
+.DS_Store
