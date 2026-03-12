@@ -53,7 +53,7 @@ class TCPServer(BaseServer):
     def start_server(self) -> None:
         self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-        self.socket.bind((HOST, UDP_PORT))
+        self.socket.bind((HOST, TCP_PORT))
         self.socket.listen(1)
         print(f"TCP Server started on {HOST}:{TCP_PORT}")
 
