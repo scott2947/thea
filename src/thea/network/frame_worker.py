@@ -3,7 +3,7 @@ import numpy as np
 from thea.network.server import UDPServer
 
 
-class FrameWorker:
+class FrameProducer:
     def __init__(self, frame_queue: queue.Queue[np.ndarray]):
         self.frame_queue = frame_queue
         self.server = UDPServer()

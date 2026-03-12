@@ -1,7 +1,7 @@
 import cv2, os
 import numpy as np
 from datetime import datetime
-from thea.sounds import play_morse_pattern
+from thea.morse import play_morse_pattern
 
 
 is_tuning = False
@@ -44,3 +44,7 @@ def tune(frame: np.ndarray) -> None:
         print(f"Saved tuning image: {filepath}")
 
     play_morse_pattern(".")
+
+
+if __name__ == "__main__":
+    pass

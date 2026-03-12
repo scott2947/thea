@@ -1,10 +1,10 @@
 import queue, threading
 from thea.detection.base import BaseDetector
 from thea.planning.base import BasePlanner
-from thea.network.frame_thread import FrameProducer
-from thea.detection.detection_thread import DetectionProcessor
-from thea.planning.planning_thread import PlanningProcessor
-from thea.network.command_thread import CommandConsumer
+from thea.network.frame_worker import FrameProducer
+from thea.detection.worker import DetectionProcessor
+from thea.planning.worker import PlanningProcessor
+from thea.network.command_worker import CommandConsumer
 
 
 class Pipeline:
@@ -54,3 +54,7 @@ class Pipeline:
         self.detection_processor.stop()
         self.planning_processor.stop()
         self.command_consumer.stop()
+
+
+if __name__ == "__main__":
+    pass

@@ -1,6 +1,6 @@
 import numpy as np
 from thea.pipeline import Pipeline
-from thea.detection.color.detection import ColorDetector
+from thea.detection.color.detector import ColorDetector
 from thea.planning.base import BasePlanner
 
 

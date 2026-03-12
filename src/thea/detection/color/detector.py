@@ -20,3 +20,7 @@ class ColorDetector(BaseDetector):
                 targets.append([int(cx), int(cy)])
 
         return np.array(targets)
+
+
+if __name__ == "__main__":
+    pass
