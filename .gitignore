@@ -1,9 +1,12 @@
 thea.egg-info/
 __pycache__/
-playground/
-config.py
+.pytest_cache/
+.DS_Store
+
 .vscode/
-storage/
 .devcontainer/
 .claude/
-.DS_Store
+
+config.py
+storage/
+CLAUDE.md

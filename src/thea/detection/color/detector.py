@@ -1,6 +1,7 @@
 import cv2
 import numpy as np
 from thea.detection.base import BaseDetector
+from thea.config import GRID_WIDTH, GRID_HEIGHT
 
 
 class ColorDetector(BaseDetector):
@@ -13,11 +14,14 @@ class ColorDetector(BaseDetector):
         mask = cv2.morphologyEx(mask, cv2.MORPH_OPEN, kernel, iterations=3)
 
         num_labels, _, stats, centroids = cv2.connectedComponentsWithStats(mask, connectivity=8)
+        frame_h, frame_w = frame.shape[:2]
         targets = []
         for i in range(1, num_labels):
             if stats[i, cv2.CC_STAT_AREA] > 100:
                 cx, cy = centroids[i]
-                targets.append([int(cx), int(cy)])
+                gx = cx / frame_w * GRID_WIDTH
+                gy = cy / frame_h * GRID_HEIGHT
+                targets.append([gx, gy])
 
         return np.array(targets)
 
