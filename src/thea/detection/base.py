@@ -4,7 +4,7 @@ from abc import ABC, abstractmethod
 
 class BaseDetector(ABC):
     @abstractmethod
-    def detect_targets(self, frame: np.ndarray) -> np.ndarray:
+    def detect(self, frame: np.ndarray) -> list:
         pass
 
 

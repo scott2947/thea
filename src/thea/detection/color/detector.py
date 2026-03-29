@@ -5,7 +5,7 @@ from thea.config import GRID_WIDTH, GRID_HEIGHT
 
 
 class ColorDetector(BaseDetector):
-    def detect_targets(self, frame: np.ndarray) -> np.ndarray:
+    def detect(self, frame: np.ndarray) -> list:
         hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
         lower_bound, upper_bound = np.array([29, 120, 50]), np.array([60, 255, 255])
         mask = cv2.inRange(hsv, lower_bound, upper_bound)
@@ -23,7 +23,7 @@ class ColorDetector(BaseDetector):
                 gy = cy / frame_h * GRID_HEIGHT
                 targets.append([gx, gy])
 
-        return np.array(targets)
+        return targets
 
 
 if __name__ == "__main__":

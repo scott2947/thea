@@ -4,7 +4,7 @@ from thea.planning.base import BasePlanner
 
 
 class PlanningProcessor:
-    def __init__(self, coord_queue: queue.Queue[np.ndarray], command_queue: queue.Queue[np.ndarray], planner: BasePlanner):
+    def __init__(self, coord_queue: queue.Queue[list], command_queue: queue.Queue[dict], planner: BasePlanner):
         self.coord_queue = coord_queue
         self.command_queue = command_queue
         self.planner = planner
@@ -19,7 +19,7 @@ class PlanningProcessor:
         while self.running:
             try:
                 coords = self.coord_queue.get()
-                command = self.planner.plan_commands(coords)
+                command = self.planner.plan(coords)
                 self.command_queue.put(command)
                 self.coord_queue.task_done()
             except queue.Empty:

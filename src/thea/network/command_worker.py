@@ -1,10 +1,9 @@
-import queue
-import numpy as np
+import queue, json
 from thea.network.server import TCPServer
 
 
 class CommandConsumer:
-    def __init__(self, command_queue: queue.Queue[np.ndarray]):
+    def __init__(self, command_queue: queue.Queue[dict]):
         self.command_queue = command_queue
         self.server = TCPServer()
         self.running = False
@@ -20,7 +19,7 @@ class CommandConsumer:
         while self.running:
             try:
                 command = self.command_queue.get()
-                self.server.send(command.tobytes())
+                self.server.send_string(json.dumps(command))
                 self.command_queue.task_done()
             except queue.Empty:
                 pass
