@@ -10,12 +10,14 @@ class HeadPlanner(BasePlanner):
     def __init__(self):
         self.mid_x = GRID_WIDTH / 2
         self.mid_y = GRID_HEIGHT / 2
-        self.pan_pid = PIDController(kp=25, ki=0.1, kd=0.72) # 19.2, 0.72
-        self.tilt_pid = PIDController(kp=12, ki=0.1, kd=0.45) # 12, 0.45
+        self.pan_pid = PIDController(kp=26.0, ki=0.01, kd=1.0) # 26.0, 0.01, 1.0
+        self.tilt_pid = PIDController(kp=12.0, ki=0.01, kd=0.5) # 12.0, 0.01, 0.5
 
     def plan(self, coords: list, timestamp: float) -> tuple:
         target = min(coords, key=lambda c: math.hypot(c[0] - self.mid_x, c[1] - self.mid_y), default=None)
         if target is None:
+            self.pan_pid.reset()
+            self.tilt_pid.reset()
             return (0.0, 0.0)
 
         error_x = (target[0] - self.mid_x) / GRID_WIDTH

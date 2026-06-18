@@ -6,7 +6,7 @@ class PIDController:
     kp: float
     ki: float
     kd: float
-    integral_limit: float = 10.0
+    integral_limit: float = 1.0
 
     _integral: float = field(default=0.0, init=False)
     _last_error: float = field(default=0.0, init=False)
@@ -31,3 +31,8 @@ class PIDController:
         self._last_ts = timestamp
 
         return self.kp * error + self.ki * self._integral + self.kd * derivative
+    
+    def reset(self):
+        self._integral = 0.0
+        self._last_ts = None
+        self._last_error = 0.0
