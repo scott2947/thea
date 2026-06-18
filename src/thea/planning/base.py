@@ -1,10 +1,9 @@
-import numpy as np
 from abc import ABC, abstractmethod
 
 
 class BasePlanner(ABC):
     @abstractmethod
-    def plan_commands(self, coords: np.ndarray) -> np.ndarray:
+    def plan(self, coords: list, timestamp: float) -> tuple:
         pass
 
 
